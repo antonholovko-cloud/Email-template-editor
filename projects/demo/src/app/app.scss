@@ -26,6 +26,31 @@
     margin: 0 auto;
     line-height: 1.6;
   }
+
+  .header-links {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .header-link {
+    display: inline-block;
+    padding: 8px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.1);
+    transition: background 0.2s, border-color 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.22);
+      border-color: white;
+    }
+  }
 }
 
 .demo-content {
