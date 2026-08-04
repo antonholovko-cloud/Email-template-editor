@@ -31,7 +31,7 @@ jobs:
         run: npm ci
 
       - name: Build demo
-        run: npx ng build demo --base-href "/wysiwyg-editor/"
+        run: npx ng build demo --base-href "/${{ github.event.repository.name }}/"
 
       - name: Add .nojekyll file
         run: touch dist/demo/.nojekyll
