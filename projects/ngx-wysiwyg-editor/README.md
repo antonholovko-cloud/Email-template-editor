@@ -135,8 +135,8 @@ export class AppComponent {
 
 ## Additional Resources
 
-- [Live Demo](https://antonholovko-cloud.github.io/wysiwyg-editor/)
-- [GitHub Repository](https://github.com/antonholovko-cloud/wysiwyg-editor)
+- [Live Demo](https://antonholovko-cloud.github.io/Email-template-editor/)
+- [GitHub Repository](https://github.com/antonholovko-cloud/Email-template-editor)
 - [NPM Package](https://www.npmjs.com/package/ngx-wysiwyg-editor)
 - [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli)
 
@@ -146,4 +146,4 @@ MIT License - see the [LICENSE](../../LICENSE) file for details.
 
 ## Support
 
-For issues, questions, or feature requests, please [create an issue](https://github.com/antonholovko-cloud/wysiwyg-editor/issues) on GitHub.
+For issues, questions, or feature requests, please [create an issue](https://github.com/antonholovko-cloud/Email-template-editor/issues) on GitHub.

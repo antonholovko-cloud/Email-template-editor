@@ -6,12 +6,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/antonholovko-cloud/wysiwyg-editor.git"
+    "url": "https://github.com/antonholovko-cloud/Email-template-editor.git"
   },
   "bugs": {
-    "url": "https://github.com/antonholovko-cloud/wysiwyg-editor/issues"
+    "url": "https://github.com/antonholovko-cloud/Email-template-editor/issues"
   },
-  "homepage": "https://github.com/antonholovko-cloud/wysiwyg-editor#readme",
+  "homepage": "https://github.com/antonholovko-cloud/Email-template-editor#readme",
   "keywords": [
     "angular",
     "wysiwyg",

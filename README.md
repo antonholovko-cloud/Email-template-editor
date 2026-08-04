@@ -1,6 +1,6 @@
 # Email template editor
 
-Demo: https://antonholovko-cloud.github.io/wysiwyg-editor/
+Demo: https://antonholovko-cloud.github.io/Email-template-editor/
 
 <img width="1287" height="658" alt="image" src="https://github.com/user-attachments/assets/850a580f-9ba8-486c-89c0-1f1d7518a68d" />
 
@@ -405,7 +405,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-For issues, questions, or suggestions, please [create an issue](https://github.com/antonholovko-cloud/wysiwyg-editor/issues) on GitHub.
+For issues, questions, or suggestions, please [create an issue](https://github.com/antonholovko-cloud/Email-template-editor/issues) on GitHub.
 
 ## Acknowledgments
 
