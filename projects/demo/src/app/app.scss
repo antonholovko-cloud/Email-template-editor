@@ -815,3 +815,185 @@ wysiwyg-editor {
   display: block;
   height: 100%;
 }
+// Theme toggle in the page header
+.demo-header {
+  position: relative;
+
+  .theme-toggle {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    color: white;
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+  }
+}
+
+// Autosave status bar under the main editor
+.autosave-bar {
+  max-width: 1200px;
+  margin: 12px auto 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: white;
+  border: 1px solid #e4e7ee;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  color: #555;
+
+  .autosave-restored {
+    color: #2e7d32;
+    font-weight: 600;
+  }
+
+  .autosave-clear {
+    margin-left: auto;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Page-wide dark mode
+// ---------------------------------------------------------------------------
+.demo-container.dark {
+  background: #12151c;
+
+  .demo-section {
+    h2, h3, h4 {
+      color: #dfe4ec;
+    }
+
+    > p, p {
+      color: #9aa3b2;
+    }
+
+    code {
+      background: #262d39;
+      color: #8ab4f8;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+  }
+
+  .autosave-bar {
+    background: #1a1f29;
+    border-color: #2c3442;
+    color: #9aa3b2;
+
+    .autosave-restored {
+      color: #81c784;
+    }
+  }
+
+  .gallery-card {
+    background: #1a1f29;
+    border-color: #2c3442;
+
+    &:hover {
+      border-color: #3d4b66;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    &.active {
+      border-color: #667eea;
+    }
+  }
+
+  .gallery-preview {
+    background: #151a22;
+    border-bottom-color: #242b38;
+
+    .pv-line { background: #313a49; }
+    .pv-image { background: #232b39; }
+    .pv-divider { border-top-color: #313a49; }
+    .pv-columns .pv-col { background: #232b39; }
+  }
+
+  .gallery-info {
+    h4 { color: #dfe4ec; }
+    p { color: #8d96a6; }
+    .gallery-meta { color: #5d6675; }
+  }
+
+  .editor-wrapper,
+  .editor-container {
+    background: #1a1f29;
+    border-color: #2c3442;
+  }
+
+  .blocks-display,
+  .html-output,
+  .form-result {
+    background: #1a1f29;
+    border-color: #2c3442;
+
+    pre {
+      background: #12151c;
+      color: #b8c1d1;
+    }
+  }
+
+  .wysiwyg-form {
+    background: #1a1f29;
+
+    label {
+      color: #9aa3b2;
+    }
+
+    .form-control {
+      background: #12151c;
+      border-color: #2c3442;
+      color: #dfe4ec;
+
+      &:focus {
+        border-color: #667eea;
+      }
+    }
+  }
+
+  .form-features,
+  .compact-features {
+    background: #1a1f29;
+
+    li, ul {
+      color: #9aa3b2;
+    }
+  }
+
+  .btn.btn-outline {
+    background: #1a1f29;
+    border-color: #3a4353;
+    color: #b8c1d1;
+
+    &:hover {
+      background: #242b38;
+    }
+  }
+
+  .feature-card,
+  .instruction-step {
+    background: #1a1f29;
+    border-color: #2c3442;
+    box-shadow: none;
+
+    h4 { color: #dfe4ec; }
+    p { color: #8d96a6; }
+  }
+
+  .demo-footer {
+    background: #0c0e13;
+  }
+}

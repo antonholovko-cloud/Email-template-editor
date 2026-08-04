@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {EditorConfig, EmailContent, EmailBlock} from '../../../ngx-wysiwyg-editor/src/lib/wysiwyg-editor.component';
 import {WysiwygEditorComponent} from '../../../ngx-wysiwyg-editor/src/lib/wysiwyg-editor.component';
@@ -10,7 +10,7 @@ import {EMAIL_TEMPLATE_PRESETS, EmailTemplatePreset} from './email-templates';
   templateUrl: './app.html',
   styleUrls: ['./app.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   @ViewChild('editorComponent') editorComponent!: WysiwygEditorComponent;
 
   title = 'Email Template Editor Demo';
@@ -29,6 +29,9 @@ export class AppComponent {
   wysiwygForm: FormGroup;
   formSubmitResult: any = null;
 
+  // Dark mode for the whole demo page (persisted in localStorage)
+  darkMode = false;
+
   // Configuration examples
   defaultConfig: EditorConfig = {
     theme: 'light',
@@ -37,7 +40,8 @@ export class AppComponent {
     emailWidth: '600px',
     backgroundColor: '#f4f4f4',
     fontFamily: 'Arial, sans-serif',
-    height: '600px'
+    height: '600px',
+    autosaveKey: 'ngx-wysiwyg-demo-draft'
   };
 
   compactConfig: EditorConfig = {
@@ -67,6 +71,37 @@ export class AppComponent {
   // Template gallery
   templatePresets = EMAIL_TEMPLATE_PRESETS;
   activePresetId: string | null = null;
+
+  ngOnInit(): void {
+    try {
+      this.darkMode = localStorage.getItem('ngx-wysiwyg-demo-dark') === '1';
+    } catch {
+      this.darkMode = false;
+    }
+    this.applyTheme();
+  }
+
+  toggleDarkMode(): void {
+    this.darkMode = !this.darkMode;
+    try {
+      localStorage.setItem('ngx-wysiwyg-demo-dark', this.darkMode ? '1' : '0');
+    } catch {
+      // Storage unavailable — theme just won't persist
+    }
+    this.applyTheme();
+  }
+
+  private applyTheme(): void {
+    const theme: 'light' | 'dark' = this.darkMode ? 'dark' : 'light';
+    // New object references so the editors' [config] input picks up the change
+    this.defaultConfig = { ...this.defaultConfig, theme };
+    this.compactConfig = { ...this.compactConfig, theme };
+    this.formConfig = { ...this.formConfig, theme };
+  }
+
+  clearDraft(): void {
+    this.editorComponent?.clearAutosave();
+  }
 
   loadTemplate(preset: EmailTemplatePreset): void {
     // Deep copy so editing in the canvas never mutates the preset definition
@@ -114,7 +149,6 @@ export class AppModule {}`
     {
       label: 'HTML',
       code: `<wysiwyg-editor
-  [(ngModel)]="emailContent"
   [config]="defaultConfig"
   [blocks]="externalBlocks"
   (contentChange)="onContentChange($event)"
@@ -282,18 +316,13 @@ export class AppComponent {
   compactTabs: CodeTab[] = [
     {
       label: 'HTML',
-      code: `<wysiwyg-editor
-  [(ngModel)]="emailContent"
-  [config]="compactConfig">
-</wysiwyg-editor>`
+      code: `<wysiwyg-editor [config]="compactConfig"></wysiwyg-editor>`
     },
     {
       label: 'TypeScript',
       code: `import { EditorConfig } from 'ngx-wysiwyg-editor';
 
 export class AppComponent {
-  emailContent = '';
-
   // Fixed height + hidden properties panel: ideal for embedding
   compactConfig: EditorConfig = {
     theme: 'light',
@@ -368,6 +397,70 @@ export class AppComponent {
         (click)="loadTemplate(preset)">
   {{ preset.name }}
 </button>`
+    }
+  ];
+
+  darkThemeTabs: CodeTab[] = [
+    {
+      label: 'TypeScript',
+      code: `import { EditorConfig } from 'ngx-wysiwyg-editor';
+
+export class AppComponent {
+  config: EditorConfig = {
+    theme: 'dark'   // 'light' (default) or 'dark'
+  };
+
+  toggleTheme(): void {
+    // Pass a new object reference so the editor picks up the change
+    this.config = {
+      ...this.config,
+      theme: this.config.theme === 'dark' ? 'light' : 'dark'
+    };
+  }
+}`
+    },
+    {
+      label: 'HTML',
+      code: `<!-- Dark theme styles the editor chrome (toolbar, panels, canvas).
+     The email you are building keeps its own colors. -->
+<wysiwyg-editor [config]="config"></wysiwyg-editor>
+
+<button (click)="toggleTheme()">Toggle theme</button>`
+    }
+  ];
+
+  autosaveTabs: CodeTab[] = [
+    {
+      label: 'TypeScript',
+      code: `import { EditorConfig, WysiwygEditorComponent } from 'ngx-wysiwyg-editor';
+
+export class AppComponent {
+  @ViewChild('editor') editor!: WysiwygEditorComponent;
+
+  config: EditorConfig = {
+    // Setting a key enables autosave to localStorage.
+    // Blocks + settings are saved (debounced) on every change
+    // and restored automatically on the next visit.
+    autosaveKey: 'my-email-draft',
+    autosaveDebounceMs: 800,   // optional, default 800
+    autosaveRestore: true      // optional, default true
+  };
+
+  discardDraft(): void {
+    this.editor.clearAutosave();  // removes the saved draft
+  }
+}`
+    },
+    {
+      label: 'HTML',
+      code: `<wysiwyg-editor #editor [config]="config"></wysiwyg-editor>
+
+<!-- The component exposes autosave state for status UIs -->
+<p *ngIf="editor.restoredFromAutosave">Draft restored from your last session</p>
+<p *ngIf="editor.lastAutosaveAt">
+  Saved at {{ editor.lastAutosaveAt | date:'HH:mm:ss' }}
+</p>
+<button (click)="discardDraft()">Discard draft</button>`
     }
   ];
 

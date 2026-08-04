@@ -39,6 +39,12 @@ export interface EditorConfig {
   minHeight?: string;
   maxHeight?: string;
   toolbar?: ToolbarConfig;
+  /** localStorage key; setting it enables debounced autosave of blocks + settings */
+  autosaveKey?: string;
+  /** Debounce for autosave writes, default 800ms */
+  autosaveDebounceMs?: number;
+  /** Restore saved state on init (default true). Skipped when [blocks] was provided non-empty. */
+  autosaveRestore?: boolean;
 }
 
 @Component({
@@ -63,6 +69,9 @@ export class WysiwygEditorComponent implements ControlValueAccessor, OnInit, Aft
   @Input() disabled = false;
   @Input() set blocks(value: EmailBlock[]) {
     if (value && Array.isArray(value)) {
+      if (value.length > 0) {
+        this.externalBlocksProvided = true;
+      }
       this.emailBlocks = [...value];
       this.renderEmail();
       this.emitChange();
@@ -109,6 +118,12 @@ export class WysiwygEditorComponent implements ControlValueAccessor, OnInit, Aft
   isMobile = false;
   showExportDropdown = false;
   private resizeListener: any;
+
+  // Autosave state
+  lastAutosaveAt: Date | null = null;
+  restoredFromAutosave = false;
+  private autosaveTimer: any = null;
+  private externalBlocksProvided = false;
 
   // Email settings
   private _emailSettings = {
@@ -232,6 +247,7 @@ export class WysiwygEditorComponent implements ControlValueAccessor, OnInit, Aft
   ngOnInit(): void {
     this.initializeConfig();
     this.loadDefaultTemplate();
+    this.restoreAutosave();
     this.checkMobileView();
 
     // Listen for window resize
@@ -258,6 +274,83 @@ export class WysiwygEditorComponent implements ControlValueAccessor, OnInit, Aft
     if (this.resizeListener) {
       window.removeEventListener('resize', this.resizeListener);
     }
+
+    // Flush any pending autosave so the latest edits survive teardown
+    if (this.autosaveTimer) {
+      clearTimeout(this.autosaveTimer);
+      this.autosaveTimer = null;
+      this.saveAutosaveNow();
+    }
+  }
+
+  // Autosave (opt-in via config.autosaveKey)
+  private restoreAutosave(): void {
+    const key = this.config.autosaveKey;
+    if (!key || this.config.autosaveRestore === false || this.externalBlocksProvided) {
+      return;
+    }
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      if (!saved || !Array.isArray(saved.blocks) || saved.blocks.length === 0) return;
+      this.emailBlocks = saved.blocks;
+      if (saved.settings && typeof saved.settings === 'object') {
+        this._emailSettings = { ...this._emailSettings, ...saved.settings };
+      }
+      this.lastAutosaveAt = saved.savedAt ? new Date(saved.savedAt) : null;
+      this.restoredFromAutosave = true;
+      this.renderEmail();
+      this.emitChange();
+    } catch {
+      // Corrupted saved state or storage unavailable — start fresh
+    }
+  }
+
+  private scheduleAutosave(): void {
+    if (!this.config.autosaveKey) return;
+    if (this.autosaveTimer) {
+      clearTimeout(this.autosaveTimer);
+    }
+    const delay = this.config.autosaveDebounceMs ?? 800;
+    this.autosaveTimer = setTimeout(() => {
+      this.autosaveTimer = null;
+      this.saveAutosaveNow();
+    }, delay);
+  }
+
+  private saveAutosaveNow(): void {
+    const key = this.config.autosaveKey;
+    if (!key) return;
+    try {
+      const savedAt = new Date();
+      localStorage.setItem(key, JSON.stringify({
+        version: 1,
+        savedAt: savedAt.toISOString(),
+        blocks: this.emailBlocks,
+        settings: this._emailSettings
+      }));
+      this.lastAutosaveAt = savedAt;
+    } catch {
+      // Storage full or unavailable — skip this save
+    }
+  }
+
+  /** Remove the saved draft and reset autosave state */
+  clearAutosave(): void {
+    if (this.config.autosaveKey) {
+      try {
+        localStorage.removeItem(this.config.autosaveKey);
+      } catch {
+        // Storage unavailable — nothing to clear
+      }
+    }
+    if (this.autosaveTimer) {
+      clearTimeout(this.autosaveTimer);
+      this.autosaveTimer = null;
+    }
+    this.lastAutosaveAt = null;
+    this.restoredFromAutosave = false;
   }
 
   ngAfterViewInit(): void {
@@ -1203,6 +1296,8 @@ export class WysiwygEditorComponent implements ControlValueAccessor, OnInit, Aft
 
     // Also emit blocks separately for backward compatibility
     this.blocksChange.emit([...this.emailBlocks]);
+
+    this.scheduleAutosave();
   }
 
   // Public method to get current email content on demand

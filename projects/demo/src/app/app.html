@@ -1,5 +1,9 @@
-<div class="demo-container">
+<div class="demo-container" [class.dark]="darkMode">
   <header class="demo-header">
+    <button type="button" class="theme-toggle" (click)="toggleDarkMode()"
+            [attr.aria-label]="darkMode ? 'Switch to light mode' : 'Switch to dark mode'">
+      {{ darkMode ? '☀️ Light' : '🌙 Dark' }}
+    </button>
     <h1>{{ title }}</h1>
     <p>A Campaigns-style email template builder with drag & drop blocks, visual editing, and real-time preview.</p>
     <div class="header-links">
@@ -78,7 +82,6 @@
       <div class="editor-wrapper">
         <wysiwyg-editor
           #editorComponent
-          [(ngModel)]="emailContent"
           [config]="defaultConfig"
           [blocks]="externalBlocks"
           (contentChange)="onContentChange($event)"
@@ -86,9 +89,38 @@
           (blocksChange)="onBlocksChange($event)">
         </wysiwyg-editor>
       </div>
+      <div class="autosave-bar">
+        <span class="autosave-status">
+          💾
+          <ng-container *ngIf="editorComponent?.lastAutosaveAt; else noDraft">
+            Draft autosaved at {{ editorComponent.lastAutosaveAt | date:'HH:mm:ss' }}
+          </ng-container>
+          <ng-template #noDraft>Autosave on — edit something and your draft is stored locally</ng-template>
+        </span>
+        <span *ngIf="editorComponent?.restoredFromAutosave" class="autosave-restored">
+          ↻ Restored from your previous session
+        </span>
+        <button type="button" class="btn btn-outline autosave-clear" (click)="clearDraft()">
+          Clear saved draft
+        </button>
+      </div>
       <div class="section-code">
         <app-code-snippet [tabs]="defaultEditorTabs"></app-code-snippet>
       </div>
+    </section>
+
+    <!-- Dark Theme -->
+    <section class="demo-section">
+      <h2>Dark Theme</h2>
+      <p>Set <code>theme: 'dark'</code> in the editor config to switch the editor chrome — toolbar, panels, and canvas — to a dark palette. The email you are building keeps its own colors. Try the {{ darkMode ? '☀️' : '🌙' }} toggle in the page header: it themes this whole demo and every editor on the page.</p>
+      <app-code-snippet [tabs]="darkThemeTabs"></app-code-snippet>
+    </section>
+
+    <!-- Autosave -->
+    <section class="demo-section">
+      <h2>Autosave to localStorage</h2>
+      <p>Set <code>autosaveKey</code> in the config and the editor saves your blocks and settings to localStorage on every change (debounced). Reload this page after editing the Full Editor above — your draft comes back automatically.</p>
+      <app-code-snippet [tabs]="autosaveTabs"></app-code-snippet>
     </section>
 
     <!-- External Block Management Demo -->
@@ -224,9 +256,7 @@
 
       <div class="editor-container compact">
         <wysiwyg-editor
-          [(ngModel)]="emailContent"
           [config]="compactConfig"
-          (contentChange)="onContentChange($event)"
           (blockSelected)="onBlockSelected($event)">
         </wysiwyg-editor>
       </div>

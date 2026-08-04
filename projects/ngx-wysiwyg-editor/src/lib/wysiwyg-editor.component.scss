@@ -1125,3 +1125,292 @@
 .visibility-desktop-only {
   // Applied via JavaScript when not in desktop preview
 }
+
+// ---------------------------------------------------------------------------
+// Dark theme (config.theme === 'dark') — themes the editor chrome only;
+// the email being edited keeps its own background/settings.
+// ---------------------------------------------------------------------------
+// Repeated class boosts specificity above the deeply nested light-theme selectors
+.email-editor.theme-dark.theme-dark.theme-dark.theme-dark.theme-dark {
+  $dt-surface: #1e242e;
+  $dt-raised: #262d39;
+  $dt-hover: #303948;
+  $dt-border: #3a4353;
+  $dt-text: #d5dbe5;
+  $dt-muted: #97a1b3;
+
+  background: $dt-surface;
+  border-color: $dt-border;
+
+  .editor-toolbar {
+    background: $dt-surface;
+    border-bottom-color: $dt-border;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+    .editor-title {
+      color: $dt-text;
+    }
+  }
+
+  .toolbar-btn {
+    background: $dt-raised;
+    border-color: $dt-border;
+    color: $dt-muted;
+
+    &:hover {
+      background: $dt-hover;
+      color: $dt-text;
+    }
+
+    &.active {
+      background: rgba(33, 150, 243, 0.18);
+      border-color: #2196F3;
+      color: #64b5f6;
+    }
+
+    &.primary {
+      background: #2196F3;
+      border-color: #2196F3;
+      color: #fff;
+
+      &:hover {
+        background: #1976D2;
+      }
+    }
+  }
+
+  .export-dropdown-menu {
+    background: $dt-raised;
+    border-color: $dt-border;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+
+    .export-option {
+      color: $dt-text;
+
+      &:hover {
+        background: $dt-hover;
+      }
+    }
+  }
+
+  .blocks-panel {
+    background: $dt-surface;
+    border-right-color: $dt-border;
+
+    .drawer-handle {
+      background: $dt-surface;
+      border-bottom-color: $dt-border;
+    }
+
+    .panel-tabs {
+      background: $dt-raised;
+      border-bottom-color: $dt-border;
+
+      .tab-btn {
+        color: $dt-muted;
+
+        &:hover {
+          background: $dt-hover;
+        }
+
+        &.active {
+          background: $dt-surface;
+          color: #64b5f6;
+          border-bottom-color: #2196F3;
+        }
+      }
+    }
+
+    .block-item {
+      background: $dt-raised;
+      border-color: $dt-border;
+
+      &:hover {
+        background: rgba(33, 150, 243, 0.12);
+        border-color: #2196F3;
+      }
+
+      .block-icon {
+        background: $dt-surface;
+      }
+
+      .block-info {
+        .block-name {
+          color: $dt-text;
+        }
+
+        .block-desc {
+          color: $dt-muted;
+        }
+      }
+    }
+
+    .settings-section {
+      h3 {
+        color: $dt-text;
+      }
+    }
+  }
+
+  .email-canvas-container {
+    background: #161b23;
+
+    .canvas-header {
+      background: $dt-surface;
+      border-bottom-color: $dt-border;
+
+      .device-btn {
+        background: $dt-raised;
+        border-color: $dt-border;
+        color: $dt-muted;
+
+        &:hover {
+          background: $dt-hover;
+        }
+
+        &.active {
+          background: #2196F3;
+          border-color: #2196F3;
+          color: #fff;
+        }
+      }
+
+      .device-info .device-size {
+        background: $dt-raised;
+        color: $dt-muted;
+      }
+
+      .view-mode-toggle {
+        border-color: $dt-border;
+
+        .view-btn {
+          background: $dt-raised;
+          color: $dt-muted;
+
+          &:first-child {
+            border-right-color: $dt-border;
+          }
+
+          &:hover {
+            background: $dt-hover;
+          }
+
+          &.active {
+            background: #2196F3;
+            color: #fff;
+          }
+        }
+      }
+
+      .clear-btn {
+        background: $dt-raised;
+        border-color: $dt-border;
+        color: $dt-muted;
+
+        &:hover {
+          background: rgba(244, 67, 54, 0.15);
+          border-color: #f44336;
+          color: #ef9a9a;
+        }
+      }
+    }
+
+    .email-canvas {
+      background: #161b23;
+
+      &[data-device="mobile"],
+      &[data-device="tablet"] {
+        background: linear-gradient(to bottom, #10141a, #161b23);
+      }
+    }
+  }
+
+  .properties-panel {
+    background: $dt-surface;
+    border-left-color: $dt-border;
+
+    .panel-header {
+      border-bottom-color: $dt-border;
+
+      @media (max-width: 768px) {
+        background: $dt-raised;
+      }
+
+      h3 {
+        color: $dt-text;
+      }
+
+      .close-btn {
+        color: $dt-muted;
+
+        &:hover {
+          background: $dt-hover;
+          color: $dt-text;
+        }
+      }
+    }
+
+    .properties-tabs {
+      background: $dt-raised;
+      border-bottom-color: $dt-border;
+
+      .tab-btn {
+        color: $dt-muted;
+
+        &:hover {
+          background: $dt-hover;
+        }
+
+        &.active {
+          background: $dt-surface;
+          color: #64b5f6;
+          border-bottom-color: #2196F3;
+        }
+      }
+    }
+  }
+
+  // Form controls everywhere in the editor chrome
+  .settings-section,
+  .properties-content,
+  .property-fields {
+    label,
+    h3,
+    h4 {
+      color: $dt-muted;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="number"],
+    select,
+    textarea {
+      background: #1a202a;
+      border-color: $dt-border;
+      color: $dt-text;
+
+      &:focus {
+        border-color: #2196F3;
+      }
+    }
+
+    input[type="color"] {
+      background: #1a202a;
+      border-color: $dt-border;
+    }
+
+    .help-text {
+      color: $dt-muted;
+    }
+
+    .checkbox-label {
+      color: $dt-text;
+    }
+  }
+
+  .mobile-properties-btn {
+    background: $dt-raised;
+    border-color: $dt-border;
+    color: $dt-text;
+  }
+}
