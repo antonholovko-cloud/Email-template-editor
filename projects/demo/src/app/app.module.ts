@@ -3,11 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app';
+import { CodeSnippetComponent } from './code-snippet.component';
 import { WysiwygEditorComponent } from '../../../ngx-wysiwyg-editor/src/lib/wysiwyg-editor.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CodeSnippetComponent
   ],
   imports: [
     BrowserModule,

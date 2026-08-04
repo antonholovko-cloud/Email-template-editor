@@ -34,10 +34,41 @@
 
 .demo-section {
   padding: 40px 20px;
-  
+  max-width: 1200px;
+  margin: 0 auto;
+
+  app-code-snippet {
+    display: block;
+    max-width: 900px;
+  }
+
   &.full-height {
     padding: 20px;
-    
+    max-width: none;
+
+    h2, > p {
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    > p {
+      margin-bottom: 20px;
+    }
+
+    .section-code {
+      max-width: 1200px;
+      margin: 0 auto;
+
+      app-code-snippet {
+        max-width: 900px;
+      }
+    }
+
     .editor-wrapper {
       height: 600px;
       max-width: 1200px;

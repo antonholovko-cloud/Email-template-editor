@@ -6,8 +6,17 @@
 
   <main class="demo-content">
 
+    <!-- Getting Started -->
+    <section class="demo-section">
+      <h2>Getting Started</h2>
+      <p>Install the package and import the editor — either as a standalone component or via the module.</p>
+      <app-code-snippet [tabs]="gettingStartedTabs"></app-code-snippet>
+    </section>
+
     <!-- Main Email Editor -->
     <section class="demo-section full-height">
+      <h2>Full Editor</h2>
+      <p>The complete editor with block panel, canvas, and properties panel. This live instance is created with the exact code shown below.</p>
       <div class="editor-wrapper">
         <wysiwyg-editor
           #editorComponent
@@ -19,11 +28,15 @@
           (blocksChange)="onBlocksChange($event)">
         </wysiwyg-editor>
       </div>
+      <div class="section-code">
+        <app-code-snippet [tabs]="defaultEditorTabs"></app-code-snippet>
+      </div>
     </section>
 
     <!-- External Block Management Demo -->
     <section class="demo-section">
-      <h3>External Block Management</h3>
+      <h2>External Block Management</h2>
+      <p>Control the editor programmatically: push blocks in via the <code>[blocks]</code> input or the <code>setBlocks()</code> method, and read them back with <code>getBlocks()</code>. The buttons below operate on the Full Editor above.</p>
       <div class="control-buttons">
         <button (click)="addCustomBlock()" class="btn btn-primary">
           Add Custom Block
@@ -42,6 +55,7 @@
         <h4>Current Blocks ({{ currentBlocks.length }})</h4>
         <pre>{{ currentBlocks | json }}</pre>
       </div>
+      <app-code-snippet [tabs]="blocksApiTabs"></app-code-snippet>
     </section>
 
     <!-- Output Section -->
@@ -71,7 +85,9 @@
     <section class="demo-section">
       <h2>Form Integration</h2>
       <p>Use the WYSIWYG editor as a form control with validation and data binding. Perfect for content management systems and document editing.</p>
-      
+
+      <app-code-snippet [tabs]="formTabs"></app-code-snippet>
+
       <form [formGroup]="wysiwygForm" (ngSubmit)="onWysiwygFormSubmit()" class="wysiwyg-form">
         <div class="form-group">
           <label for="documentTitle">Document Title *</label>
@@ -145,6 +161,8 @@
     <section class="demo-section">
       <h2>Compact Configuration</h2>
       <p>A more compact version perfect for embedding within pages. Properties panel is hidden by default and the overall height is reduced.</p>
+
+      <app-code-snippet [tabs]="compactTabs"></app-code-snippet>
 
       <div class="editor-container compact">
         <wysiwyg-editor

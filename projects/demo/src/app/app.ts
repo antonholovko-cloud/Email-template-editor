@@ -1,7 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { EditorConfig, EmailContent, EmailBlock } from '../../../ngx-wysiwyg-editor/src/lib/wysiwyg-editor.component';
-import { WysiwygEditorComponent } from '../../../ngx-wysiwyg-editor/src/lib/wysiwyg-editor.component';
+import {Component, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {EditorConfig, EmailContent, EmailBlock} from '../../../ngx-wysiwyg-editor/src/lib/wysiwyg-editor.component';
+import {WysiwygEditorComponent} from '../../../ngx-wysiwyg-editor/src/lib/wysiwyg-editor.component';
+import {CodeTab} from './code-snippet.component';
 
 @Component({
   selector: 'app-root',
@@ -62,6 +63,237 @@ export class AppComponent {
   // HTML output display
   showHtmlOutput = false;
 
+  // ---------------------------------------------------------------------------
+  // Code snippets shown next to each live example
+  // ---------------------------------------------------------------------------
+
+  gettingStartedTabs: CodeTab[] = [
+    {
+      label: 'Install',
+      code: `npm install ngx-wysiwyg-editor --save`
+    },
+    {
+      label: 'Standalone',
+      code: `import { Component } from '@angular/core';
+import { WysiwygEditorComponent } from 'ngx-wysiwyg-editor';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [WysiwygEditorComponent],
+  templateUrl: './app.component.html'
+})
+export class AppComponent {}`
+    },
+    {
+      label: 'NgModule',
+      code: `import { NgModule } from '@angular/core';
+import { NgxWysiwygEditorModule } from 'ngx-wysiwyg-editor';
+
+@NgModule({
+  imports: [NgxWysiwygEditorModule],
+  // ...
+})
+export class AppModule {}`
+    }
+  ];
+
+  defaultEditorTabs: CodeTab[] = [
+    {
+      label: 'HTML',
+      code: `<wysiwyg-editor
+  [(ngModel)]="emailContent"
+  [config]="defaultConfig"
+  [blocks]="externalBlocks"
+  (contentChange)="onContentChange($event)"
+  (blockSelected)="onBlockSelected($event)"
+  (blocksChange)="onBlocksChange($event)">
+</wysiwyg-editor>`
+    },
+    {
+      label: 'TypeScript',
+      code: `import { EditorConfig, EmailContent, EmailBlock } from 'ngx-wysiwyg-editor';
+
+export class AppComponent {
+  emailContent = '';
+  externalBlocks: EmailBlock[] = [];
+
+  defaultConfig: EditorConfig = {
+    theme: 'light',
+    showBlockPanel: true,
+    showPropertiesPanel: true,
+    emailWidth: '600px',
+    backgroundColor: '#f4f4f4',
+    fontFamily: 'Arial, sans-serif',
+    height: '600px'
+  };
+
+  onContentChange(content: EmailContent): void {
+    // content.html   -> generated, email-client friendly HTML
+    // content.blocks -> block structure (JSON serializable)
+    // content.settings -> global email settings
+    this.emailContent = content.html;
+  }
+
+  onBlockSelected(block: EmailBlock): void {
+    console.log('Block selected:', block);
+  }
+
+  onBlocksChange(blocks: EmailBlock[]): void {
+    console.log('Blocks changed:', blocks);
+  }
+}`
+    }
+  ];
+
+  blocksApiTabs: CodeTab[] = [
+    {
+      label: 'TypeScript',
+      code: `import { ViewChild } from '@angular/core';
+import { WysiwygEditorComponent, EmailBlock } from 'ngx-wysiwyg-editor';
+
+export class AppComponent {
+  @ViewChild('editorComponent') editorComponent!: WysiwygEditorComponent;
+
+  // Blocks passed to [blocks] replace the editor content
+  externalBlocks: EmailBlock[] = [];
+
+  addCustomBlock(): void {
+    const customBlock: EmailBlock = {
+      id: \`custom_\${Date.now()}\`,
+      type: 'text',
+      content: {
+        content: '<h2>Custom Added Block</h2><p>Added programmatically.</p>',
+        padding: '20px',
+        fontSize: '14px',
+        textAlign: 'center'
+      }
+    };
+    const current = this.editorComponent.getBlocks();
+    this.editorComponent.setBlocks([...current, customBlock]);
+  }
+
+  loadPresetTemplate(): void {
+    this.externalBlocks = [
+      {
+        id: 'preset_header',
+        type: 'header',
+        content: {
+          companyName: 'Demo Company',
+          tagline: 'Preset Template Example',
+          backgroundColor: '#4CAF50',
+          textColor: '#ffffff',
+          alignment: 'center'
+        }
+      },
+      {
+        id: 'preset_button',
+        type: 'button',
+        content: {
+          text: 'Get Started',
+          url: 'https://example.com',
+          backgroundColor: '#4CAF50',
+          textColor: '#ffffff',
+          alignment: 'center'
+        }
+      }
+    ];
+  }
+
+  getBlocksFromEditor(): EmailBlock[] {
+    return this.editorComponent.getBlocks();
+  }
+}`
+    },
+    {
+      label: 'HTML',
+      code: `<wysiwyg-editor
+  #editorComponent
+  [blocks]="externalBlocks"
+  (blocksChange)="onBlocksChange($event)">
+</wysiwyg-editor>
+
+<button (click)="addCustomBlock()">Add Custom Block</button>
+<button (click)="loadPresetTemplate()">Load Preset Template</button>`
+    }
+  ];
+
+  formTabs: CodeTab[] = [
+    {
+      label: 'HTML',
+      code: `<form [formGroup]="wysiwygForm" (ngSubmit)="onWysiwygFormSubmit()">
+  <input type="text" formControlName="documentTitle" placeholder="Title">
+
+  <wysiwyg-editor
+    formControlName="emailTemplate"
+    [config]="formConfig">
+  </wysiwyg-editor>
+
+  <button type="submit" [disabled]="wysiwygForm.invalid">Submit</button>
+</form>`
+    },
+    {
+      label: 'TypeScript',
+      code: `import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { EditorConfig } from 'ngx-wysiwyg-editor';
+
+export class AppComponent {
+  wysiwygForm: FormGroup;
+
+  formConfig: EditorConfig = {
+    theme: 'light',
+    showBlockPanel: true,
+    showPropertiesPanel: true,
+    emailWidth: '550px',
+    backgroundColor: '#f9f9f9',
+    height: '450px'
+  };
+
+  constructor(private fb: FormBuilder) {
+    // The editor implements ControlValueAccessor,
+    // so it works as a regular form control.
+    this.wysiwygForm = this.fb.group({
+      documentTitle: ['', Validators.required],
+      emailTemplate: ['', [Validators.required, Validators.minLength(20)]]
+    });
+  }
+
+  onWysiwygFormSubmit(): void {
+    if (this.wysiwygForm.valid) {
+      console.log(this.wysiwygForm.value);
+    }
+  }
+}`
+    }
+  ];
+
+  compactTabs: CodeTab[] = [
+    {
+      label: 'HTML',
+      code: `<wysiwyg-editor
+  [(ngModel)]="emailContent"
+  [config]="compactConfig">
+</wysiwyg-editor>`
+    },
+    {
+      label: 'TypeScript',
+      code: `import { EditorConfig } from 'ngx-wysiwyg-editor';
+
+export class AppComponent {
+  emailContent = '';
+
+  // Fixed height + hidden properties panel: ideal for embedding
+  compactConfig: EditorConfig = {
+    theme: 'light',
+    showBlockPanel: true,
+    showPropertiesPanel: false,
+    emailWidth: '500px',
+    height: '400px'
+  };
+}`
+    }
+  ];
+
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
       title: ['Sample Document', Validators.required],
@@ -112,7 +344,7 @@ export class AppComponent {
 
   downloadTemplate(): void {
     if (this.emailContent) {
-      const blob = new Blob([this.emailContent], { type: 'text/html' });
+      const blob = new Blob([this.emailContent], {type: 'text/html'});
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -260,8 +492,8 @@ export class AppComponent {
           gap: '20px',
           columnBackground: '#f0f0f0',
           columns: [
-            { content: '<h3>Feature 1</h3><p>Amazing features for your email campaigns.</p>' },
-            { content: '<h3>Feature 2</h3><p>Easy to use and customize templates.</p>' }
+            {content: '<h3>Feature 1</h3><p>Amazing features for your email campaigns.</p>'},
+            {content: '<h3>Feature 2</h3><p>Easy to use and customize templates.</p>'}
           ]
         }
       },
