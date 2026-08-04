@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {EditorConfig, EmailContent, EmailBlock} from '../../../ngx-wysiwyg-editor/src/lib/wysiwyg-editor.component';
 import {WysiwygEditorComponent} from '../../../ngx-wysiwyg-editor/src/lib/wysiwyg-editor.component';
 import {CodeTab} from './code-snippet.component';
+import {EMAIL_TEMPLATE_PRESETS, EmailTemplatePreset} from './email-templates';
 
 @Component({
   selector: 'app-root',
@@ -62,6 +63,17 @@ export class AppComponent {
 
   // HTML output display
   showHtmlOutput = false;
+
+  // Template gallery
+  templatePresets = EMAIL_TEMPLATE_PRESETS;
+  activePresetId: string | null = null;
+
+  loadTemplate(preset: EmailTemplatePreset): void {
+    // Deep copy so editing in the canvas never mutates the preset definition
+    this.externalBlocks = JSON.parse(JSON.stringify(preset.blocks));
+    this.activePresetId = preset.id;
+    document.querySelector('.editor-wrapper')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   // ---------------------------------------------------------------------------
   // Code snippets shown next to each live example
@@ -291,6 +303,71 @@ export class AppComponent {
     height: '400px'
   };
 }`
+    }
+  ];
+
+  galleryTabs: CodeTab[] = [
+    {
+      label: 'TypeScript',
+      code: `import { EmailBlock } from 'ngx-wysiwyg-editor';
+
+// A preset is just an array of EmailBlock objects
+export interface EmailTemplatePreset {
+  id: string;
+  name: string;
+  blocks: EmailBlock[];
+}
+
+export class AppComponent {
+  externalBlocks: EmailBlock[] = [];
+
+  loadTemplate(preset: EmailTemplatePreset): void {
+    // Deep copy so canvas edits never mutate the preset definition.
+    // Assigning a new array to [blocks] replaces the editor content.
+    this.externalBlocks = JSON.parse(JSON.stringify(preset.blocks));
+  }
+}`
+    },
+    {
+      label: 'Preset example',
+      code: `const welcomePreset: EmailTemplatePreset = {
+  id: 'welcome',
+  name: 'Welcome / Onboarding',
+  blocks: [
+    {
+      id: 'wl_header',
+      type: 'header',
+      content: {
+        companyName: 'Welcome aboard!',
+        tagline: 'We are thrilled to have you with us',
+        backgroundColor: '#4CAF50',
+        textColor: '#ffffff',
+        alignment: 'center'
+      }
+    },
+    {
+      id: 'wl_cta',
+      type: 'button',
+      content: {
+        text: 'Get Started',
+        url: 'https://example.com/onboarding',
+        backgroundColor: '#4CAF50',
+        textColor: '#ffffff',
+        alignment: 'center'
+      }
+    }
+    // ...text, columns, divider, social blocks
+  ]
+};`
+    },
+    {
+      label: 'HTML',
+      code: `<wysiwyg-editor [blocks]="externalBlocks"></wysiwyg-editor>
+
+<button *ngFor="let preset of templatePresets"
+        (click)="loadTemplate(preset)">
+  {{ preset.name }}
+</button>`
     }
   ];
 

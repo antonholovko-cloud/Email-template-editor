@@ -21,6 +21,56 @@
       <app-code-snippet [tabs]="gettingStartedTabs"></app-code-snippet>
     </section>
 
+    <!-- Template Gallery -->
+    <section class="demo-section">
+      <h2>Template Gallery</h2>
+      <p>Ready-made templates built entirely from editor blocks. Click one to load it into the editor below, then customize every block.</p>
+
+      <div class="gallery-grid">
+        <div
+          *ngFor="let preset of templatePresets"
+          class="gallery-card"
+          [class.active]="preset.id === activePresetId"
+          (click)="loadTemplate(preset)">
+          <div class="gallery-preview">
+            <ng-container *ngFor="let block of preset.blocks.slice(0, 7)">
+              <ng-container [ngSwitch]="block.type">
+                <div *ngSwitchCase="'header'" class="pv-header" [style.background]="block.content.backgroundColor">
+                  {{ block.content.companyName }}
+                </div>
+                <div *ngSwitchCase="'text'" class="pv-text">
+                  <span class="pv-line"></span>
+                  <span class="pv-line short"></span>
+                </div>
+                <div *ngSwitchCase="'image'" class="pv-image">🖼️</div>
+                <div *ngSwitchCase="'button'" class="pv-button-row">
+                  <span class="pv-button" [style.background]="block.content.backgroundColor">{{ block.content.text }}</span>
+                </div>
+                <div *ngSwitchCase="'divider'" class="pv-divider"></div>
+                <div *ngSwitchCase="'columns'" class="pv-columns">
+                  <span class="pv-col"></span>
+                  <span class="pv-col"></span>
+                </div>
+                <div *ngSwitchCase="'social'" class="pv-social">📘 🐦 📸</div>
+                <div *ngSwitchCase="'spacer'" class="pv-spacer"></div>
+                <div *ngSwitchCase="'html'" class="pv-html">&lt;/&gt;</div>
+              </ng-container>
+            </ng-container>
+          </div>
+          <div class="gallery-info" [style.border-top-color]="preset.accent">
+            <h4>{{ preset.icon }} {{ preset.name }}</h4>
+            <p>{{ preset.description }}</p>
+            <span class="gallery-meta">{{ preset.blocks.length }} blocks</span>
+            <button type="button" class="btn btn-primary gallery-load" [style.background]="preset.accent">
+              {{ preset.id === activePresetId ? '✓ Loaded' : 'Load Template' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <app-code-snippet [tabs]="galleryTabs"></app-code-snippet>
+    </section>
+
     <!-- Main Email Editor -->
     <section class="demo-section full-height">
       <h2>Full Editor</h2>
