@@ -1,30 +1,35 @@
 {
   "name": "ngx-wysiwyg-editor",
   "displayName": "NGX WYSIWYG Editor",
-  "description": "A powerful and customizable WYSIWYG HTML editor for Angular applications",
+  "description": "Drag-and-drop email template editor for Angular — block-based visual builder with responsive preview, dark theme, autosave, and clean HTML export",
   "author": {
-    "name": "Your Name",
-    "email": "your.email@example.com"
+    "name": "Anton Holovko",
+    "email": "anton.holovko@gmail.com"
   },
-  "company": "Your Company",
-  "copyright": "Copyright © 2024",
+  "copyright": "Copyright © 2026",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/antonholovko-cloud/wysiwyg-editor.git"
+    "url": "https://github.com/antonholovko-cloud/Email-template-editor.git"
   },
-  "projectUrl": "https://github.com/antonholovko-cloud/wysiwyg-editor",
-  "iconUrl": "https://raw.githubusercontent.com/antonholovko-cloud/ngx-wysiwyg-editor/main/icon.png",
+  "projectUrl": "https://github.com/antonholovko-cloud/Email-template-editor",
+  "iconUrl": "https://raw.githubusercontent.com/antonholovko-cloud/Email-template-editor/main/icon.png",
   "keywords": [
     "angular",
+    "email",
+    "email-template",
+    "email-builder",
+    "email-editor",
+    "template-editor",
+    "drag-and-drop",
     "wysiwyg",
     "editor",
     "html",
-    "rich-text-editor",
+    "newsletter",
     "typescript"
   ],
-  "tags": "angular;wysiwyg;editor;html;rich-text-editor;typescript",
-  "releaseNotes": "Initial release with full WYSIWYG editing capabilities",
+  "tags": "angular;email;email-template;email-builder;drag-and-drop;wysiwyg;editor;html;newsletter;typescript",
+  "releaseNotes": "Email template editor with block-based builder, template gallery, dark theme, and autosave",
   "nuget": {
     "packageId": "NgxWysiwygEditor",
     "targetFramework": ".NETStandard2.0",

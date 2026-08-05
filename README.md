@@ -5,7 +5,7 @@ Demo: https://antonholovko-cloud.github.io/Email-template-editor/
 <img width="1287" height="658" alt="image" src="https://github.com/user-attachments/assets/850a580f-9ba8-486c-89c0-1f1d7518a68d" />
 
 
-A powerful and customizable email template editor component for Angular applications. This library provides a rich text editing experience with extensive formatting options and a clean, intuitive interface.
+A drag-and-drop email template editor component for Angular applications. Build responsive email templates from ready-made content blocks, style them in a visual properties panel, and export clean email-ready HTML — with light/dark themes and optional localStorage autosave built in.
 
 ## Angular Compatibility
 
@@ -22,22 +22,15 @@ A powerful and customizable email template editor component for Angular applicat
 
 ## Features
 
-- **Rich Text Formatting**: Bold, italic, underline, strikethrough
-- **Headings**: Support for H1, H2, H3, and paragraph styles
-- **Lists**: Ordered and unordered lists with indentation control
-- **Alignment**: Left, center, right, and justify text alignment
-- **Links and Images**: Insert and manage hyperlinks and images
-- **Colors**: Text color and background color customization
-- **Padding Controls**: Set custom padding for selected elements
-- **Additional Features**:
-  - Undo/Redo functionality
-  - Horizontal rules
-  - Subscript and superscript
-  - Clear formatting
-  - Paste as plain text
+- **Block-Based Visual Builder**: Compose emails from drag-and-drop blocks — header, text, image, button, columns, social, video, divider, spacer, and custom HTML
+- **Responsive Preview**: Live mobile, tablet, and desktop preview with an edit/preview mode toggle
+- **Styling Controls**: Colors, fonts, alignment, padding, and per-block advanced options in a properties panel with Content, Style, and Advanced tabs
+- **Dark Theme**: Built-in light and dark editor themes via `config.theme`
+- **Autosave**: Opt-in debounced autosave to localStorage with automatic restore on reload
+- **Template Gallery**: Five ready-made presets in the [live demo](https://antonholovko-cloud.github.io/Email-template-editor/) to start from
+- **Import/Export**: Save and load templates, export email-ready HTML
+- **Configurable Toolbar**: Show or hide each toolbar control individually
 - **Angular Forms Integration**: Full support for reactive and template-driven forms
-- **Customizable**: Configure toolbar buttons, height, placeholder, and more
-- **Accessible**: Keyboard navigation and ARIA support
 - **Sanitized Output**: XSS protection with Angular's DomSanitizer
 
 ## Installation
@@ -116,37 +109,37 @@ export class MyComponent {
   [config]="editorConfig"
   [disabled]="isDisabled"
   (contentChange)="onContentChange($event)"
-  (focus)="onFocus()"
-  (blur)="onBlur()">
+  (blocksChange)="onBlocksChange($event)"
+  (blockSelected)="onBlockSelected($event)">
 </wysiwyg-editor>
 ```
 
 ```typescript
-import { EditorConfig } from 'ngx-wysiwyg-editor';
+import { EditorConfig, EmailContent, EmailBlock } from 'ngx-wysiwyg-editor';
 
 export class MyComponent {
   content = '';
   isDisabled = false;
   
   editorConfig: EditorConfig = {
-    height: '500px',
-    minHeight: '300px',
-    maxHeight: '800px',
-    placeholder: 'Start writing your content...',
-    showToolbar: true,
-    defaultParagraphSeparator: 'p'
+    theme: 'dark',
+    height: '600px',
+    emailWidth: '600px',
+    backgroundColor: '#f4f4f4',
+    fontFamily: 'Arial, sans-serif',
+    autosaveKey: 'my-email-draft'
   };
   
-  onContentChange(content: string) {
-    console.log('Content changed:', content);
+  onContentChange(content: EmailContent) {
+    console.log('HTML:', content.html, 'Blocks:', content.blocks);
   }
   
-  onFocus() {
-    console.log('Editor focused');
+  onBlocksChange(blocks: EmailBlock[]) {
+    console.log('Blocks changed:', blocks);
   }
   
-  onBlur() {
-    console.log('Editor blurred');
+  onBlockSelected(block: EmailBlock) {
+    console.log('Selected block:', block.type);
   }
 }
 ```
@@ -187,47 +180,38 @@ export class FormExampleComponent {
 }
 ```
 
-### Custom Toolbar Buttons
+### Dark Theme
+
+The editor ships with light and dark themes. Set `theme` in the config (default is light):
 
 ```typescript
-import { EditorCommand, EditorConfig } from 'ngx-wysiwyg-editor';
-
-export class MyComponent {
-  editorConfig: EditorConfig = {
-    customButtons: [
-      { command: 'bold', icon: 'B', tooltip: 'Bold' },
-      { command: 'italic', icon: 'I', tooltip: 'Italic' },
-      { command: 'separator' },
-      { command: 'formatBlock', value: 'h1', icon: 'H1', tooltip: 'Heading 1' },
-      { command: 'formatBlock', value: 'p', icon: 'P', tooltip: 'Paragraph' },
-      { command: 'separator' },
-      { command: 'createLink', icon: '🔗', tooltip: 'Insert Link', requiresValue: true },
-      { command: 'insertImage', icon: '📷', tooltip: 'Insert Image', requiresValue: true },
-      { command: 'separator' },
-      { command: 'setPadding', icon: '📦', tooltip: 'Set Padding', requiresValue: true },
-      { command: 'separator' },
-      { command: 'removeFormat', icon: '✖', tooltip: 'Clear Formatting' }
-    ]
-  };
-}
+editorConfig: EditorConfig = {
+  theme: 'dark'
+};
 ```
 
-### Using Padding Controls
+### Autosave
 
-The editor includes a padding control feature that allows users to set custom padding for selected elements:
+Set `autosaveKey` to enable debounced autosave of blocks and email settings to localStorage. On reload, the editor restores the saved draft automatically (unless non-empty `[blocks]` were provided):
 
-1. **Select an element** in the editor (text, paragraph, heading, etc.)
-2. **Click the padding button** (📦) in the toolbar
-3. **Set padding values** for top, right, bottom, and left in the dialog
-4. **Click Apply** to apply the padding to the selected element
+```typescript
+editorConfig: EditorConfig = {
+  autosaveKey: 'my-email-draft',   // localStorage key — enables autosave
+  autosaveDebounceMs: 800,         // debounce for writes (default 800ms)
+  autosaveRestore: true            // restore saved state on init (default true)
+};
+```
 
-The padding dialog provides individual controls for:
-- **Top padding** (in pixels)
-- **Right padding** (in pixels) 
-- **Bottom padding** (in pixels)
-- **Left padding** (in pixels)
+### Loading Existing Content
 
-The padding values are applied as inline CSS styles to the selected element and will be preserved in the HTML output.
+Pass blocks directly, or provide full content with settings:
+
+```html
+<wysiwyg-editor
+  [blocks]="savedBlocks"
+  [emailSettings]="{ width: '600px', backgroundColor: '#ffffff' }">
+</wysiwyg-editor>
+```
 
 ## Configuration Options
 
@@ -235,13 +219,18 @@ The padding values are applied as inline CSS styles to the selected element and 
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `height` | string | '400px' | Editor height |
-| `minHeight` | string | '200px' | Minimum editor height |
-| `maxHeight` | string | '600px' | Maximum editor height |
-| `placeholder` | string | 'Start typing...' | Placeholder text |
-| `showToolbar` | boolean | true | Show/hide toolbar |
-| `customButtons` | EditorCommand[] | null | Custom toolbar buttons |
-| `defaultParagraphSeparator` | string | 'p' | Default block element |
+| `theme` | 'light' \| 'dark' | 'light' | Editor color theme |
+| `height` | string | '600px' | Editor height |
+| `minHeight` | string | - | Minimum editor height |
+| `maxHeight` | string | - | Maximum editor height |
+| `emailWidth` | string | '600px' | Width of the email canvas |
+| `backgroundColor` | string | '#f4f4f4' | Email background color |
+| `fontFamily` | string | 'Arial, sans-serif' | Default font family |
+| `showBlockPanel` | boolean | true | Show/hide the blocks side panel |
+| `showPropertiesPanel` | boolean | true | Show/hide the properties side panel |
+| `autosaveKey` | string | - | localStorage key; setting it enables autosave |
+| `autosaveDebounceMs` | number | 800 | Debounce for autosave writes |
+| `autosaveRestore` | boolean | true | Restore saved state on init |
 | `toolbar` | ToolbarConfig | See below | Toolbar visibility configuration |
 
 ### Toolbar Configuration
@@ -306,26 +295,36 @@ editorConfig: EditorConfig = {
 };
 ```
 
-## Available Commands
+## Available Blocks
 
-The following commands can be used in custom toolbar configurations:
+- **Header**: Company branding with customizable name and tagline
+- **Text**: Rich text content with formatting options
+- **Image**: Image insertion with alt text and linking
+- **Button**: Call-to-action buttons with custom styling
+- **Columns**: Multi-column layouts (2, 3, or 4 columns)
+- **Social**: Social media links with icons
+- **Video**: Video embedding with custom thumbnails
+- **Divider**: Visual separators with styling options
+- **Spacer**: Adjustable spacing elements
+- **HTML**: Custom HTML code insertion
 
-- **Text Formatting**: `bold`, `italic`, `underline`, `strikeThrough`
-- **Headings**: `formatBlock` with values: `h1`, `h2`, `h3`, `p`
-- **Alignment**: `justifyLeft`, `justifyCenter`, `justifyRight`, `justifyFull`
-- **Lists**: `insertUnorderedList`, `insertOrderedList`, `indent`, `outdent`
-- **Links/Media**: `createLink`, `unlink`, `insertImage`
-- **Colors**: `foreColor`, `backColor`
-- **Layout**: `setPadding`
-- **Other**: `undo`, `redo`, `removeFormat`, `insertHorizontalRule`, `subscript`, `superscript`
+## Inputs
+
+| Input | Type | Description |
+|-------|------|-------------|
+| `config` | EditorConfig | Editor configuration (see above) |
+| `disabled` | boolean | Disable the editor |
+| `blocks` | EmailBlock[] | Set the editor's blocks programmatically |
+| `emailSettings` | object | Email-level settings (width, background color, etc.) |
+| `initialContent` | EmailContent | Blocks and settings in one object |
 
 ## Events
 
 | Event | Type | Description |
 |-------|------|-------------|
-| `contentChange` | EventEmitter<string> | Emitted when content changes |
-| `focus` | EventEmitter<void> | Emitted when editor gains focus |
-| `blur` | EventEmitter<void> | Emitted when editor loses focus |
+| `contentChange` | EventEmitter<EmailContent> | Emitted with HTML, blocks, and settings on every change |
+| `blocksChange` | EventEmitter<EmailBlock[]> | Emitted when the block list changes |
+| `blockSelected` | EventEmitter<EmailBlock> | Emitted when a block is selected |
 
 ## Building from Source
 

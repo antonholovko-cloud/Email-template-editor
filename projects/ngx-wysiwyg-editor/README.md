@@ -29,6 +29,8 @@ A powerful, feature-rich Angular email template editor component that provides a
 - Border radius and margin controls
 
 ⚡ **Professional Features**
+- Light and dark editor themes (`config.theme`)
+- Opt-in debounced autosave to localStorage with automatic draft restore (`config.autosaveKey`)
 - Import/Export email templates
 - HTML code export for email campaigns
 - Responsive design with mobile-first approach
@@ -132,6 +134,29 @@ export class AppComponent {
   content = '';
 }
 ```
+
+### Configuration
+
+```typescript
+import { EditorConfig } from 'ngx-wysiwyg-editor';
+
+const editorConfig: EditorConfig = {
+  theme: 'dark',              // 'light' (default) or 'dark'
+  height: '600px',
+  emailWidth: '600px',
+  backgroundColor: '#f4f4f4',
+  fontFamily: 'Arial, sans-serif',
+  autosaveKey: 'my-email-draft',  // enables debounced localStorage autosave + restore
+  autosaveDebounceMs: 800,
+  autosaveRestore: true
+};
+```
+
+```html
+<wysiwyg-editor [config]="editorConfig" (contentChange)="onChange($event)"></wysiwyg-editor>
+```
+
+See the [full documentation](https://github.com/antonholovko-cloud/Email-template-editor#readme) for all configuration options, inputs, and events.
 
 ## Additional Resources
 

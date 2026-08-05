@@ -1,7 +1,7 @@
 {
   "name": "ngx-wysiwyg-editor",
-  "version": "1.0.18",
-  "description": "A powerful and customizable WYSIWYG HTML editor for Angular applications",
+  "version": "1.0.19",
+  "description": "Drag-and-drop email template editor for Angular — block-based visual builder with responsive preview, dark theme, autosave, and clean HTML export",
   "author": "Anton Holovko",
   "license": "MIT",
   "repository": {
@@ -14,13 +14,18 @@
   "homepage": "https://github.com/antonholovko-cloud/Email-template-editor#readme",
   "keywords": [
     "angular",
+    "email",
+    "email-template",
+    "email-builder",
+    "email-editor",
+    "template-editor",
+    "drag-and-drop",
     "wysiwyg",
     "editor",
     "html",
-    "rich-text-editor",
-    "typescript",
-    "contenteditable",
-    "text-editor"
+    "newsletter",
+    "responsive-email",
+    "typescript"
   ],
   "publishConfig": {
     "access": "public"
